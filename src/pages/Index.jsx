@@ -1,25 +1,44 @@
 import { useState } from "react";
 import { Container, VStack, Heading, Text, Button, Box, HStack, IconButton, FormControl, FormLabel, Input, Alert, AlertIcon } from "@chakra-ui/react";
-import { FaPlus, FaCalendarAlt } from "react-icons/fa";
+import { FaPlus, FaCalendarAlt, FaEdit } from "react-icons/fa";
 
 const Index = () => {
   const [showForm, setShowForm] = useState(false);
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [events, setEvents] = useState([]);
+  const [editingEvent, setEditingEvent] = useState(null);
 
   const handleCreateEvent = () => {
-    // Simple validation
     if (eventName && eventDate) {
-      // Store event in temporary state (for now, just log it)
-      console.log("Event Created:", { name: eventName, date: eventDate });
-      setSuccessMessage("Event created successfully!");
+      if (editingEvent) {
+        // Update existing event
+        const updatedEvents = events.map(event =>
+          event.id === editingEvent.id ? { ...event, name: eventName, date: eventDate } : event
+        );
+        setEvents(updatedEvents);
+        setSuccessMessage("Event updated successfully!");
+      } else {
+        // Create new event
+        const newEvent = { id: Date.now(), name: eventName, date: eventDate };
+        setEvents([...events, newEvent]);
+        setSuccessMessage("Event created successfully!");
+      }
       setEventName("");
       setEventDate("");
       setShowForm(false);
+      setEditingEvent(null);
     } else {
       setSuccessMessage("Please fill in all fields.");
     }
+  };
+
+  const handleEditEvent = (event) => {
+    setEditingEvent(event);
+    setEventName(event.name);
+    setEventDate(event.date);
+    setShowForm(true);
   };
 
   return (
@@ -51,7 +70,7 @@ const Index = () => {
                 <Input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
               </FormControl>
               <Button colorScheme="teal" onClick={handleCreateEvent}>
-                Submit
+                {editingEvent ? "Update Event" : "Submit"}
               </Button>
             </VStack>
           </Box>
@@ -62,6 +81,14 @@ const Index = () => {
             {successMessage}
           </Alert>
         )}
+        <VStack spacing={4} width="100%">
+          {events.map(event => (
+            <Box key={event.id} width="100%" p={4} borderWidth={1} borderRadius="lg" display="flex" justifyContent="space-between" alignItems="center">
+              <Text>{event.name} - {event.date}</Text>
+              <IconButton icon={<FaEdit />} onClick={() => handleEditEvent(event)} />
+            </Box>
+          ))}
+        </VStack>
       </VStack>
     </Container>
   );
