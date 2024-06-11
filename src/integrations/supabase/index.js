@@ -134,7 +134,7 @@ export const useComments = () => useQuery({
 
 export const useComment = (id) => useQuery({
     queryKey: ['comments', id],
-    queryFn: () => fromSupabase(supabase.from('comments').select('*').eq('id', id).single())),
+    queryFn: () => fromSupabase(supabase.from('comments').select('*').eq('id', id).single()),
 });
 
 export const useAddComment = () => {
