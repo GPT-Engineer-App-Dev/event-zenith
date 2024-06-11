@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, VStack, Heading, Text, Button, Box, HStack, IconButton, FormControl, FormLabel, Input, Alert, AlertIcon } from "@chakra-ui/react";
 import { FaPlus, FaCalendarAlt, FaEdit } from "react-icons/fa";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -39,6 +41,10 @@ const Index = () => {
     setEventName(event.name);
     setEventDate(event.date);
     setShowForm(true);
+  };
+
+  const handleViewEventDetails = (event) => {
+    navigate(`/event/${event.id}`);
   };
 
   return (
@@ -83,7 +89,7 @@ const Index = () => {
         )}
         <VStack spacing={4} width="100%">
           {events.map(event => (
-            <Box key={event.id} width="100%" p={4} borderWidth={1} borderRadius="lg" display="flex" justifyContent="space-between" alignItems="center">
+            <Box key={event.id} width="100%" p={4} borderWidth={1} borderRadius="lg" display="flex" justifyContent="space-between" alignItems="center" onClick={() => handleViewEventDetails(event)}>
               <Text>{event.name} - {event.date}</Text>
               <IconButton icon={<FaEdit />} onClick={() => handleEditEvent(event)} />
             </Box>
