@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, VStack, Heading, Text, Button, Box, HStack, IconButton, FormControl, FormLabel, Input, Alert, AlertIcon } from "@chakra-ui/react";
-import { FaPlus, FaCalendarAlt, FaEdit } from "react-icons/fa";
+import { FaPlus, FaCalendarAlt, FaEdit, FaTrash } from "react-icons/fa";
 
 const Index = () => {
   const [showForm, setShowForm] = useState(false);
@@ -39,6 +39,12 @@ const Index = () => {
     setEventName(event.name);
     setEventDate(event.date);
     setShowForm(true);
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    const updatedEvents = events.filter(event => event.id !== eventId);
+    setEvents(updatedEvents);
+    setSuccessMessage("Event deleted successfully!");
   };
 
   return (
@@ -85,7 +91,10 @@ const Index = () => {
           {events.map(event => (
             <Box key={event.id} width="100%" p={4} borderWidth={1} borderRadius="lg" display="flex" justifyContent="space-between" alignItems="center">
               <Text>{event.name} - {event.date}</Text>
-              <IconButton icon={<FaEdit />} onClick={() => handleEditEvent(event)} />
+              <HStack spacing={2}>
+                <IconButton icon={<FaEdit />} onClick={() => handleEditEvent(event)} />
+                <IconButton icon={<FaTrash />} onClick={() => handleDeleteEvent(event.id)} />
+              </HStack>
             </Box>
           ))}
         </VStack>
